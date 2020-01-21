@@ -18,6 +18,7 @@ private:
 		pad_cols = (k_width - 1) / 2;
 		Mat pad_image(Size(scr.cols + 2 * pad_cols, scr.rows + 2 * pad_rows), CV_64FC1, Scalar(0));
 		scr.copyTo(pad_image(Rect(pad_cols, pad_rows, scr.cols, scr.rows)));
+
 		if (type == "mirror")
 		{
 			for (int i = 0; i < pad_rows; i++)
@@ -54,18 +55,19 @@ private:
 		{
 			return pad_image;
 		}
+
 	}
 
-	Mat define_kernel(int k_width, int k_height, string type) {
-
+	Mat define_kernel(int k_width, int k_height, string type)
+	{
 		if (type == "box")
 		{
-			//Mat (int rows, int cols, int type)
 			Mat kernel(k_height, k_width, CV_64FC1, Scalar(1.0 / (k_width * k_height)));
 			return kernel;
 		}
-		else if (type == "guassian")
+		else if (type == "gaussian")
 		{
+			// I will assume k = 1 and sigma = 1
 			int pad_rows = (k_height - 1) / 2;
 			int pad_cols = (k_width - 1) / 2;
 			Mat kernel(k_height, k_width, CV_64FC1);
@@ -73,23 +75,23 @@ private:
 			{
 				for (int j = -pad_cols; j <= pad_cols; j++)
 				{
-					kernel.at <double>(i + pad_rows, j + pad_cols) = exp(-(i*i + j*j) / 2.0);
+					kernel.at<double>(i + pad_rows, j + pad_cols) = exp(-(i*i + j*j) / 2.0);
 				}
 			}
 			kernel = kernel / sum(kernel);
 			return kernel;
 		}
-
 	}
 
 public:
-	void convolve(Mat scr, Mat &dst, int k_w, int k_h, string padingType, string filterType)
+	void convolve(Mat scr, Mat &dst, int k_w, int k_h, string paddingType, string filterType)
 	{
 		Mat pad_img, kernel;
-		pad_img = padding(scr, k_w, k_h, padingType);
+		pad_img = padding(scr, k_w, k_h, paddingType);
 		kernel = define_kernel(k_w, k_h, filterType);
 
 		Mat output = Mat::zeros(scr.size(), CV_64FC1);
+
 		for (int i = 0; i < scr.rows; i++)
 		{
 			for (int j = 0; j < scr.cols; j++)
@@ -100,49 +102,23 @@ public:
 
 		output.convertTo(dst, CV_8UC1);
 	}
-};
 
+};
 
 int main() {
 	Mat img, dst;
-	img = imread("airship.jpg", 0);
-
+	img = imread("airship.jpg", 0);   
 
 	Mat kernel;
-	double k_w = 3;
-	double k_h = 3;
-
+	int k_w = 3;  // kernel width
+	int k_h = 3;  // kernel height
 
 	SpatialFiltering F1;
-	F1.convolve(img, dst, k_w, k_h, "mirror", "guassian");
-
-	Mat built;
-	GaussianBlur(img, built, Size(3, 3), 1, 1);
-
-	namedWindow("built", WINDOW_AUTOSIZE);
-	imshow("built", built);
+	F1.convolve(img, dst, k_w, k_h, "mirror", "box");
 
 	namedWindow("dst", WINDOW_AUTOSIZE);
 	imshow("dst", dst);
 
-	//imwrite("out.png", dst);
-	//imwrite("built.png", built);
-
 	waitKey(0);
 	return 0;
 }
-
-
-/*
-Mat img, output;
-// read image file
-img = imread("airship.jpg", 0);
-blur(img, output, Size(50, 50));
-
-namedWindow("output", WINDOW_AUTOSIZE);
-imshow("output", output);
-
-
-waitKey(0);
-return 0;
-*/
