@@ -9,6 +9,7 @@ using namespace std;
 
 class SpatialFiltering {
 private:
+	// member function to pad the image before convolution
 	Mat padding(Mat img, int k_width, int k_height, string type)
 	{
 		Mat scr;
@@ -18,7 +19,7 @@ private:
 		pad_cols = (k_width - 1) / 2;
 		Mat pad_image(Size(scr.cols + 2 * pad_cols, scr.rows + 2 * pad_rows), CV_64FC1, Scalar(0));
 		scr.copyTo(pad_image(Rect(pad_cols, pad_rows, scr.cols, scr.rows)));
-
+		// mirror padding
 		if (type == "mirror")
 		{
 			for (int i = 0; i < pad_rows; i++)
@@ -35,6 +36,7 @@ private:
 
 			return pad_image;
 		}
+		// replicate padding
 		else if (type == "replicate")
 		{
 			for (int i = 0; i < pad_rows; i++)
@@ -48,7 +50,7 @@ private:
 				pad_image(Rect(pad_cols, 0, 1, pad_image.rows)).copyTo(pad_image(Rect(j, 0, 1, pad_image.rows)));
 				pad_image(Rect((pad_image.cols - 1) - pad_cols, 0, 1, pad_image.rows)).copyTo(pad_image(Rect((pad_image.cols - 1) - j, 0, 1, pad_image.rows)));
 			}
-
+			// zero padding
 			return pad_image;
 		}
 		else
@@ -57,14 +59,16 @@ private:
 		}
 
 	}
-
+	// member function to define kernels for convolution
 	Mat define_kernel(int k_width, int k_height, string type)
 	{
+		// box kernel
 		if (type == "box")
 		{
 			Mat kernel(k_height, k_width, CV_64FC1, Scalar(1.0 / (k_width * k_height)));
 			return kernel;
 		}
+		// gaussian kernel
 		else if (type == "gaussian")
 		{
 			// I will assume k = 1 and sigma = 1
@@ -84,6 +88,7 @@ private:
 	}
 
 public:
+	// member function to implement convolution
 	void convolve(Mat scr, Mat &dst, int k_w, int k_h, string paddingType, string filterType)
 	{
 		Mat pad_img, kernel;
