@@ -25,13 +25,15 @@ private:
 			for (int i = 0; i < pad_rows; i++)
 			{
 				scr(Rect(0, pad_rows - i, scr.cols, 1)).copyTo(pad_image(Rect(pad_cols, i, scr.cols, 1)));
-				scr(Rect(0, (scr.rows - 1) - pad_rows + i, scr.cols, 1)).copyTo(pad_image(Rect(pad_cols, (pad_image.rows - 1) - i, scr.cols, 1)));
+				scr(Rect(0, (scr.rows - 1) - pad_rows + i, scr.cols, 1)).copyTo(pad_image(Rect(pad_cols,
+					(pad_image.rows - 1) - i, scr.cols, 1)));
 			}
 
 			for (int j = 0; j < pad_cols; j++)
 			{
 				pad_image(Rect(2 * pad_cols - j, 0, 1, pad_image.rows)).copyTo(pad_image(Rect(j, 0, 1, pad_image.rows)));
-				pad_image(Rect((pad_image.cols - 1) - 2 * pad_cols + j, 0, 1, pad_image.rows)).copyTo(pad_image(Rect((pad_image.cols - 1) - j, 0, 1, pad_image.rows)));
+				pad_image(Rect((pad_image.cols - 1) - 2 * pad_cols + j, 0, 1, pad_image.rows)).
+					copyTo(pad_image(Rect((pad_image.cols - 1) - j, 0, 1, pad_image.rows)));
 			}
 
 			return pad_image;
@@ -42,13 +44,15 @@ private:
 			for (int i = 0; i < pad_rows; i++)
 			{
 				scr(Rect(0, 0, scr.cols, 1)).copyTo(pad_image(Rect(pad_cols, i, scr.cols, 1)));
-				scr(Rect(0, (scr.rows - 1), scr.cols, 1)).copyTo(pad_image(Rect(pad_cols, (pad_image.rows - 1) - i, scr.cols, 1)));
+				scr(Rect(0, (scr.rows - 1), scr.cols, 1)).copyTo(pad_image(Rect(pad_cols, 
+					(pad_image.rows - 1) - i, scr.cols, 1)));
 			}
 
 			for (int j = 0; j < pad_cols; j++)
 			{
 				pad_image(Rect(pad_cols, 0, 1, pad_image.rows)).copyTo(pad_image(Rect(j, 0, 1, pad_image.rows)));
-				pad_image(Rect((pad_image.cols - 1) - pad_cols, 0, 1, pad_image.rows)).copyTo(pad_image(Rect((pad_image.cols - 1) - j, 0, 1, pad_image.rows)));
+				pad_image(Rect((pad_image.cols - 1) - pad_cols, 0, 1, pad_image.rows)).
+					copyTo(pad_image(Rect((pad_image.cols - 1) - j, 0, 1, pad_image.rows)));
 			}
 			// zero padding
 			return pad_image;
